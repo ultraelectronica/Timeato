@@ -14,8 +14,8 @@ import android.widget.ScrollView;
 import org.json.JSONObject;
 
 /**
- * Android shell. Mirrors web/timeato.js: pump frame deltas into the Zig core
- * while the timer runs, forward taps, and paint whatever tree comes back.
+ * Android shell. Pumps frame deltas into the Zig core
+ * while the timer runs, forwards taps, and paints whatever tree comes back.
  */
 public class MainActivity extends Activity implements Renderer.ActionSink {
 

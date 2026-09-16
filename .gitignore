@@ -1,6 +1,5 @@
 .zig-cache/
 zig-out/
-web/timeato.wasm
 
 # Android / Gradle build outputs
 android/.gradle/

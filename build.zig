@@ -44,37 +44,6 @@ pub fn build(b: *std.Build) void {
     const demo_step = b.step("demo", "Run the native view demo");
     demo_step.dependOn(&run_demo.step);
 
-    // WebAssembly build for the web shell.
-    const wasm_target = b.resolveTargetQuery(.{
-        .cpu_arch = .wasm32,
-        .os_tag = .freestanding,
-    });
-    const wasm_optimize: std.builtin.OptimizeMode = if (optimize == .Debug) .Debug else .ReleaseSmall;
-
-    const zylix_wasm = b.createModule(.{
-        .root_source_file = .{ .cwd_relative = zylix_src ++ "/vdom.zig" },
-        .target = wasm_target,
-        .optimize = wasm_optimize,
-    });
-
-    const wasm = b.addExecutable(.{
-        .name = "timeato",
-        .root_module = b.createModule(.{
-            .root_source_file = b.path("src/main.zig"),
-            .target = wasm_target,
-            .optimize = wasm_optimize,
-            .imports = &.{.{ .name = "zylix", .module = zylix_wasm }},
-        }),
-    });
-    wasm.entry = .disabled;
-    wasm.rdynamic = true;
-
-    const install_wasm = b.addInstallArtifact(wasm, .{
-        .dest_dir = .{ .override = .{ .custom = "wasm" } },
-    });
-    const wasm_step = b.step("wasm", "Build Timeato for WebAssembly");
-    wasm_step.dependOn(&install_wasm.step);
-
     // Android: one shared library per ABI holding the Zig core plus its JNI
     // bridge. The Kotlin shell loads it directly; no CMake or C involved.
     const android_abis = [_]struct { dir: []const u8, cpu: std.Target.Cpu.Arch }{

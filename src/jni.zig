@@ -1,8 +1,8 @@
 //! JNI bridge for the Android shell.
 //!
-//! Kotlin pushes actions and frame deltas in and pulls the same JSON view the
-//! web shell consumes. No logic lives here: it is a name-mangled hop into the
-//! Zig core. Symbols must match the `external fun`s in `NativeBridge.kt`.
+//! Java pushes actions and frame deltas in and pulls the same JSON view the
+//! core renders. No logic lives here: it is a name-mangled hop into the
+//! Zig core. Symbols must match the `external fun`s in `NativeBridge.java`.
 
 const c = @cImport({
     @cInclude("jni.h");

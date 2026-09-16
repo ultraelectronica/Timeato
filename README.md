@@ -1,46 +1,45 @@
 # Timeato
 
-A Pomodoro focus timer written **entirely in Zig**, rendering its UI through
-[Zylix](https://github.com/kotsutsumi/zylix)'s virtual DOM.
+A Pomodoro focus timer for **Android**, with its core written **entirely in Zig**,
+rendering its UI through [Zylix](https://github.com/kotsutsumi/zylix)'s virtual DOM.
 
-There is no Zig/JavaScript business logic split: the state machine, the view
-tree, and the DOM diffing model all live in Zig. The web layer is a thin shell
-that loads the WebAssembly module, forwards clicks, and applies the tree Zig
+There is no split business logic: the state machine, the view tree, and the
+rendering model all live in Zig. The Android shell is a thin layer that loads
+the native library, forwards taps and frame deltas, and paints the tree Zig
 hands back.
 
 ## How it works
 
 ```
-  click ──► JS shell ──► timeato_dispatch(code) ──┐
-                                                   ▼
-  rAF ───► JS shell ──► timeato_tick(delta_ms) ──► Zig core (engine.zig)
-                                                   │
-                     timeato_render() ──► JSON ◄───┘  + Zylix VDOM (view.zig)
+   tap ──► Java shell ──► nativeDispatch(code) ──┐
+                                                  ▼
+   frame ─► Java shell ──► nativeTick(delta_ms) ─► Zig core (engine.zig)
+                                                  │
+                    nativeRender() ──► JSON ◄─────┘  + Zylix VDOM (view.zig)
                          │
                          ▼
-  JS shell morphs the returned tree into the DOM
+   Java shell renders the returned tree natively
 ```
 
 - `engine.zig` is a pure state machine: no allocator, no IO, no platform code.
 - `view.zig` builds the full UI as a Zylix `VTree` (`getReconciler().getNextTree()`)
   and serializes it to compact JSON.
-- `main.zig` exposes the C ABI the platforms call.
-- The JS shell owns no timer logic — it only counts frames and paints.
+- `main.zig` exposes the C ABI the Android bridge calls.
+- `jni.zig` is the JNI bridge (`NativeBridge.*`); no Kotlin, Compose, C, or CMake.
+- The Java shell owns no timer logic — it only counts frames and paints.
 
 ## Layout
 
 ```
 src/engine.zig   Pomodoro state machine + tests
 src/view.zig     Zylix VDOM tree builder + JSON serializer + tests
-src/main.zig     C ABI exports for wasm / Android
+src/main.zig     C ABI exports for the Android bridge
 src/jni.zig      JNI bridge for the Android shell
 src/demo.zig     native demo, prints the rendered view
 src/tests.zig    test aggregator
-web/             index.html + timeato.js shell (wasm lands here at build time)
 android/         Gradle app: Java shell + native view renderer
-scripts/build.sh   build wasm, copy it into web/, optionally serve
 scripts/android.sh build the .so, copy into jniLibs, assemble/install the APK
-build.zig        test / demo / wasm / android steps
+build.zig        test / demo / android steps
 ```
 
 ## Requirements
@@ -48,6 +47,7 @@ build.zig        test / demo / wasm / android steps
 - **Zig 0.15+** (0.15.2 verified)
 - A checkout of **Zylix** at `../zylix` (only `core/src/vdom.zig` and its
   relative imports are used; nothing in the checkout is modified)
+- Android SDK + NDK (path set by `ndk_include` in `build.zig`)
 
 Override the Zylix path via `zylix_src` in `build.zig` if your checkout differs.
 
@@ -56,16 +56,7 @@ Override the Zylix path via `zylix_src` in `build.zig` if your checkout differs.
 ```sh
 zig build test                 # 15 unit tests (engine + view)
 zig build demo                 # print the rendered view natively
-zig build wasm -Doptimize=ReleaseSmall   # -> zig-out/wasm/timeato.wasm
 zig build android              # -> zig-out/android/{arm64-v8a,x86_64}/libtimeato.so
-```
-
-`scripts/build.sh` wraps the wasm build and copies the artifact into `web/`:
-
-```sh
-ZIG=/path/to/zig scripts/build.sh            # release build + copy
-ZIG=/path/to/zig scripts/build.sh debug      # debug build
-ZIG=/path/to/zig scripts/build.sh --serve    # build, copy, serve on :8080
 ```
 
 `scripts/android.sh` builds the JNI library, drops it into the app's
@@ -87,15 +78,11 @@ ZIG=/path/to/zig scripts/android.sh --install  # install + launch on the device
 
 ## Status
 
-- **Web/WASM**: complete and verified (headless Chromium at 390x844 mobile).
 - **Android**: complete and verified on a physical device (Android 15, arm64).
   The Zig core (including its JNI bridge, written in Zig) builds to
   `libtimeato.so`; the Java shell loads it, forwards taps and frame deltas, and
   paints the JSON view tree `view.zig` emits. No Kotlin, Compose, C, or CMake.
 - **Native test/demo**: works.
-- Upstream `zig build test-lib` fails in the AI modules (`coreml.zig`,
-  `llama_cpp.zig`, `whisper_cpp.zig` need missing C sources). Timeato does not
-  import those modules, so this does not affect us.
 
 ## Notes on the Android shell
 

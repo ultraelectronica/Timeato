@@ -15,7 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Applies the JSON view tree Zig produces, mirroring the CSS in web/index.html.
+ * Applies the JSON view tree Zig produces.
  *
  * The shell makes no layout or state decisions: it maps element tags to widgets
  * and class tokens to styles, then reuses widgets across frames by index.

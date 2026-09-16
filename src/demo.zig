@@ -1,5 +1,5 @@
-//! Native demo: drives the same engine/view the browser uses and prints the
-//! JSON the shell would receive. Handy for eyeballing the view without a DOM.
+//! Native demo: drives the same engine/view the Android shell uses and prints
+//! the JSON the shell would receive. Handy for eyeballing the view natively.
 
 const std = @import("std");
 const engine = @import("engine.zig");

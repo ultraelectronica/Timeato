@@ -1,7 +1,7 @@
-//! Timeato WASM entry point.
+//! Timeato core entry point.
 //!
-//! Exposes the Zig-owned app to the web shell through a tiny C ABI. The shell
-//! only pumps time in and applies the JSON view that Zig hands back.
+//! Exposes the Zig-owned app to the Android shell through a tiny C ABI. The
+//! shell only pumps time in and applies the JSON view that Zig hands back.
 
 const engine = @import("engine.zig");
 const view = @import("view.zig");

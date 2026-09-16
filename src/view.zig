@@ -1,8 +1,8 @@
 //! Timeato view - expresses the UI as a Zylix virtual DOM tree and serializes
-//! it to JSON for the thin web shell.
+//! it to JSON for the thin Android shell.
 //!
 //! Nothing here renders pixels: Zig decides the whole structure (elements,
-//! classes, text, click callbacks), then the shell applies it to the DOM.
+//! classes, text, click callbacks), then the shell applies it natively.
 
 const std = @import("std");
 const zylix = @import("zylix");
