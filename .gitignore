@@ -1,3 +1,14 @@
 .zig-cache/
 zig-out/
 web/timeato.wasm
+
+# Android / Gradle build outputs
+android/.gradle/
+android/build/
+android/app/build/
+android/app/src/main/jniLibs/
+android/local.properties
+local.properties
+*.iml
+.idea/
+.gradle/
