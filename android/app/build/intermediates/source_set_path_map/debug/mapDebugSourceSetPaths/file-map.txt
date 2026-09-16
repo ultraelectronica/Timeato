@@ -1,0 +1,8 @@
+com.timeato.app-pngs-0 /home/arnecronomica/Utilities/Projects/Timeato/android/app/build/generated/res/pngs/debug
+com.timeato.app-resValues-1 /home/arnecronomica/Utilities/Projects/Timeato/android/app/build/generated/res/resValues/debug
+com.timeato.app-updated_navigation_xml-2 /home/arnecronomica/Utilities/Projects/Timeato/android/app/build/generated/updated_navigation_xml/debug
+com.timeato.app-packageDebugResources-3 /home/arnecronomica/Utilities/Projects/Timeato/android/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.timeato.app-packageDebugResources-4 /home/arnecronomica/Utilities/Projects/Timeato/android/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.timeato.app-debug-5 /home/arnecronomica/Utilities/Projects/Timeato/android/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.timeato.app-debug-6 /home/arnecronomica/Utilities/Projects/Timeato/android/app/src/debug/res
+com.timeato.app-main-7 /home/arnecronomica/Utilities/Projects/Timeato/android/app/src/main/res

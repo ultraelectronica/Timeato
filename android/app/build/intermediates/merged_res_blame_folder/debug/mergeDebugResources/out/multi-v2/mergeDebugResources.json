@@ -1,0 +1,38 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.timeato.app-debug-4:/values_values.arsc.flat",
+            "map": [
+                {
+                    "source": "/home/arnecronomica/Utilities/Projects/Timeato/android/app/src/main/res/values/themes.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "7",
+                        "endColumns": "12",
+                        "endOffsets": "379"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "100",
+                        "endLines": "8",
+                        "endColumns": "12",
+                        "endOffsets": "424"
+                    }
+                },
+                {
+                    "source": "/home/arnecronomica/Utilities/Projects/Timeato/android/app/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "44",
+                        "endOffsets": "95"
+                    }
+                }
+            ]
+        }
+    ]
+}

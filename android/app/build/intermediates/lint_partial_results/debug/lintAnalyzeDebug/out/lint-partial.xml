@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.13.2" type="partial_results">
+    <map id="UnsafeIntentLaunch">
+            <map id="unprotected">
+                <entry
+                    name="com.timeato.app.MainActivity"
+                    boolean="true"/>
+            </map>
+    </map>
+    <map id="UnusedResources">
+        <location id="R.raw.outfit_license"
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/raw/outfit_license.txt"/>
+        <entry
+            name="model"
+            string="font[outfit(R)],raw[outfit_license(D)],string[app_name(U)],style[Theme_Timeato(U)];;;;"/>
+    </map>
+
+</incidents>

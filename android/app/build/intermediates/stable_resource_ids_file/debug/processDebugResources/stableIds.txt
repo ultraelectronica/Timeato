@@ -1,0 +1,4 @@
+com.timeato.app:style/Theme.Timeato = 0x7f040000
+com.timeato.app:string/app_name = 0x7f030000
+com.timeato.app:raw/outfit_license = 0x7f020000
+com.timeato.app:font/outfit = 0x7f010000

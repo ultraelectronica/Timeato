@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.timeato.app-debug-4:/raw_outfit_license.txt.flat",
+        "source": "com.timeato.app-main-6:/raw/outfit_license.txt"
+    },
+    {
+        "merged": "com.timeato.app-debug-4:/font_outfit.ttf.flat",
+        "source": "com.timeato.app-main-6:/font/outfit.ttf"
+    }
+]
