@@ -21,9 +21,14 @@ public class MainActivity extends Activity implements Renderer.ActionSink {
 
     private static final int BG = Color.parseColor("#12100E");
 
+    // Mirrors view.Action.duration_done in src/view.zig: committing the tape
+    // editor is the one action whose result the shell persists.
+    private static final int ACTION_DURATION_DONE = 8;
+
     private Renderer renderer;
     private LinearLayout host;
     private long lastNs = 0L;
+    private int lastAlarmSeq = -1;
 
     private final Choreographer.FrameCallback frame = new Choreographer.FrameCallback() {
         @Override
@@ -71,19 +76,48 @@ public class MainActivity extends Activity implements Renderer.ActionSink {
 
         renderer = new Renderer(this, this);
         NativeBridge.nativeInit();
+        NativeBridge.nativeSetAlarm(AlarmSounds.load(this));
+        for (int i = 0; i < DurationPrefs.PHASE_COUNT; i++) {
+            if (DurationPrefs.has(this, i)) {
+                NativeBridge.nativeSetPhaseDuration(i, DurationPrefs.load(this, i));
+            }
+        }
         draw();
         Choreographer.getInstance().postFrameCallback(frame);
     }
 
     @Override
     public void onAction(int action) {
+        if (action >= AlarmSounds.ACTION_BASE
+                && action < AlarmSounds.ACTION_BASE + AlarmSounds.COUNT) {
+            // Tapping a tone selects it (preview included); the engine records
+            // the index so the next render marks the row.
+            int index = action - AlarmSounds.ACTION_BASE;
+            AlarmSounds.save(this, index);
+            NativeBridge.nativeDispatch(action);
+            AlarmSounds.preview(this, index);
+            draw();
+            return;
+        }
         NativeBridge.nativeDispatch(action);
         draw();
+        if (action == ACTION_DURATION_DONE) {
+            // The tape editor committed all three phases; mirror them to disk.
+            for (int i = 0; i < DurationPrefs.PHASE_COUNT; i++) {
+                DurationPrefs.save(this, i, NativeBridge.nativePhaseDuration(i));
+            }
+        }
     }
 
     private void draw() {
         try {
             JSONObject view = new JSONObject(NativeBridge.nativeRender());
+            int seq = view.optInt("alarm", 0);
+            if (lastAlarmSeq != -1 && seq != lastAlarmSeq) {
+                // The Zig core completed a session; ring the selected tone.
+                AlarmSounds.play(this, view.optInt("alarm_sound", AlarmSounds.DEFAULT));
+            }
+            lastAlarmSeq = seq;
             renderer.render(host, view.getJSONObject("tree"));
         } catch (Exception e) {
             // A malformed frame must never kill the render loop.
@@ -94,5 +128,11 @@ public class MainActivity extends Activity implements Renderer.ActionSink {
     protected void onPause() {
         super.onPause();
         lastNs = 0L;
+    }
+
+    @Override
+    protected void onDestroy() {
+        AlarmSounds.stop();
+        super.onDestroy();
     }
 }
