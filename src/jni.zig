@@ -39,3 +39,23 @@ export fn Java_com_timeato_app_NativeBridge_nativeRender(env: *c.JNIEnv, clazz: 
     const json = core.timeato_render();
     return env.*.*.NewStringUTF.?(env, @ptrCast(json));
 }
+
+export fn Java_com_timeato_app_NativeBridge_nativeSetAlarm(env: *c.JNIEnv, clazz: c.jclass, id: c.jint) void {
+    _ = env;
+    _ = clazz;
+    core.timeato_set_alarm(if (id < 0) 0 else @intCast(id));
+}
+
+export fn Java_com_timeato_app_NativeBridge_nativeSetPhaseDuration(env: *c.JNIEnv, clazz: c.jclass, phase: c.jint, ms: c.jint) void {
+    _ = env;
+    _ = clazz;
+    const p: u32 = if (phase < 0) 0 else @intCast(phase);
+    core.timeato_set_phase_duration(p, if (ms < 0) 0 else @intCast(ms));
+}
+
+export fn Java_com_timeato_app_NativeBridge_nativePhaseDuration(env: *c.JNIEnv, clazz: c.jclass, phase: c.jint) c.jint {
+    _ = env;
+    _ = clazz;
+    const p: u32 = if (phase < 0) 0 else @intCast(phase);
+    return @intCast(core.timeato_phase_duration(p));
+}
