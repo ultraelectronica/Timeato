@@ -1,0 +1,11 @@
+Timeato alarm tones (alarm_argon.ogg, alarm_carbon.ogg, alarm_helium.ogg,
+alarm_krypton.ogg, alarm_neon.ogg, alarm_oxygen.ogg) are the Android Open
+Source Project material alarm sounds, fetched from
+https://github.com/aosp-mirror/platform_frameworks_base
+(path: data/sounds/alarms/material/ogg/).
+
+They are licensed under the Apache License, Version 2.0
+(http://www.apache.org/licenses/LICENSE-2.0). No changes were made to the
+audio files apart from renaming them to Android resource-safe names.
+
+Default alarm: alarm_helium.
