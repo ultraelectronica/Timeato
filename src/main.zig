@@ -17,10 +17,33 @@ pub export fn timeato_init() void {
 
 /// Dispatch a control event. Codes match `view.Action`.
 pub export fn timeato_dispatch(code: u32) void {
+    if (code >= view.Action.sound_base and code < view.Action.sound_base + engine.ALARM_COUNT) {
+        app.apply(.{ .select_alarm = code - view.Action.sound_base });
+        return;
+    }
+    if (code >= view.Action.duration_phase_base and
+        code < view.Action.duration_phase_base + engine.PHASE_COUNT)
+    {
+        app.apply(.{ .select_duration_phase = code - view.Action.duration_phase_base });
+        return;
+    }
+    if (code >= view.Action.minute_base and code <= view.Action.minute_base + engine.MAX_MINUTES) {
+        app.apply(.{ .set_minutes = code - view.Action.minute_base });
+        return;
+    }
+    if (code >= view.Action.second_base and code < view.Action.second_base + 60) {
+        app.apply(.{ .set_seconds = code - view.Action.second_base });
+        return;
+    }
     const event: engine.Event = switch (code) {
         view.Action.toggle => .toggle,
         view.Action.reset => .reset,
         view.Action.skip => .skip,
+        view.Action.settings => .open_settings,
+        view.Action.back => .close_settings,
+        view.Action.edit_duration => .open_duration,
+        view.Action.duration_cancel => .duration_cancel,
+        view.Action.duration_done => .duration_done,
         else => return,
     };
     app.apply(event);
@@ -63,4 +86,25 @@ pub export fn timeato_completed() u32 {
 
 pub export fn timeato_progress() u32 {
     return app.progressPercent();
+}
+
+/// Restore a persisted alarm choice (e.g. from the shell's preferences).
+/// Out-of-range ids clamp to the last bundled tone.
+pub export fn timeato_set_alarm(id: u32) void {
+    app.apply(.{ .select_alarm = id });
+}
+
+pub export fn timeato_alarm() u32 {
+    return app.alarm_sound;
+}
+
+/// Restore a persisted phase duration (focus/short/long by index). Clamps to
+/// three hours and refills the idle clock when the current phase is affected.
+pub export fn timeato_set_phase_duration(phase: u32, ms: u32) void {
+    app.setDurationMs(engine.phaseFromIndex(phase), ms);
+}
+
+/// Current duration of a phase, by index (for the shell to persist).
+pub export fn timeato_phase_duration(phase: u32) u32 {
+    return app.config.durationFor(engine.phaseFromIndex(phase));
 }
