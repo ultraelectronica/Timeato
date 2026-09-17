@@ -20,5 +20,11 @@ final class NativeBridge {
 
     static native String nativeRender();
 
+    static native void nativeSetAlarm(int index);
+
+    static native void nativeSetPhaseDuration(int phase, int ms);
+
+    static native int nativePhaseDuration(int phase);
+
     private NativeBridge() {}
 }
